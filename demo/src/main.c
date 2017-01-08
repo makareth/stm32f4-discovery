@@ -124,12 +124,15 @@ int main(void)
       HAL_Delay(1000);
       //LIS3DSH_Temp();
 
-      LIS3DSH_Status();
-      LIS3DSH_Out_x_l();
-      LIS3DSH_Out_x_h();
+      //LIS3DSH_Status();
+      //LIS3DSH_Out_x_h();
+      //LIS3DSH_Out_x_l();
 
-      LIS3DSH_Out_z_l();
+      //LIS3DSH_Out_y_h();
+      //LIS3DSH_Out_y_l();
+
       LIS3DSH_Out_z_h();
+      LIS3DSH_Out_z_l();
 
   }
 

@@ -3,6 +3,7 @@
 #define LIS3DSH_WHOAMI_REG	0x0F
 #define LIS3DSH_REG3_REG 	0x23
 #define LIS3DSH_REG4_REG	0x20
+#define LIS3DSH_REG5_REG	0x24
 #define LIS3DSH_OUT_T_REG	0x0C
 #define LIS3DSH_STATUS_REG	0x27
 #define LIS3DSH_OUT_X_L_REG	0x28
@@ -20,6 +21,8 @@ uint8_t LIS3DSH_IntteruptOn();
 uint8_t LIS3DSH_Temp();
 uint8_t LIS3DSH_Out_x_l();
 uint8_t LIS3DSH_Out_x_h();
+uint8_t LIS3DSH_Out_y_l();
+uint8_t LIS3DSH_Out_y_h();
 uint8_t LIS3DSH_Out_z_l();
 uint8_t LIS3DSH_Out_z_h();
 uint8_t LIS3DSH_Status();
