@@ -41,6 +41,7 @@
 #include "console.h"
 #include "usart.h"
 #include "spi.h"
+#include "lis3dsh.h"
 #include "error.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
@@ -75,7 +76,6 @@ uint32_t HAL_GetTick(void)
   return my_tick;
 }
 
-
 /**
   * @brief  Main program
   * @param  None
@@ -103,9 +103,9 @@ int main(void)
   BSP_LED_Init(LED6);
   
   /* Configure the system clock to 84 MHz */
- // SystemClock_Config();
+  //SystemClock_Config();
 
-  SysTick_Config(SystemCoreClock/ 100);
+  SysTick_Config(SystemCoreClock/ 1000);
 
   USART2_UART_Init();
   my_log(0,MODULE_MAIN,"UART initialized successfully\r\n");
@@ -115,45 +115,25 @@ int main(void)
   SPI_Init();
 
   //my_log(0,MODULE_MAIN,"Main loop...\r\n");
+  LIS3DSH_Whoami();
+  LIS3DSH_On();
+  //LIS3DSH_IntteruptOn();
 
-  write();
-while(1)
-{
-
-}
-  /* Infinite loop 
-  while (1)
+  while(1)
   {
-    switch(my_tick%4) {
-      case 0:
-        BSP_LED_On(LED3);
-        BSP_LED_Off(LED4);
-        BSP_LED_Off(LED5);
-        BSP_LED_Off(LED6);
-        break;
-      case 1:
-        BSP_LED_Off(LED3);
-        BSP_LED_On(LED4);
-        BSP_LED_Off(LED5);
-        BSP_LED_Off(LED6);
-        break;
-      case 2:
-        BSP_LED_Off(LED3);
-        BSP_LED_Off(LED4);
-        BSP_LED_Off(LED5);
-        BSP_LED_On(LED6);
-        break;
-      case 3:
-        BSP_LED_Off(LED3);
-        BSP_LED_Off(LED4);
-        BSP_LED_On(LED5);
-        BSP_LED_Off(LED6);
-        break;
-    }
-    HAL_Delay(200);
+      HAL_Delay(1000);
+      //LIS3DSH_Temp();
+
+      LIS3DSH_Status();
+      LIS3DSH_Out_x_l();
+      LIS3DSH_Out_x_h();
+
+      LIS3DSH_Out_z_l();
+      LIS3DSH_Out_z_h();
+
   }
 
-*/
+
 }
 
 

@@ -13,25 +13,24 @@ int16_t SPI_Init(void)
 	HAL_SPI_DeInit(&hspi);
 
 	SPI1_CLK_ENABLE();
-
+	hspi.Instance = SPI1;
 	hspi.Init.Mode = SPI_MODE_MASTER;
 	hspi.Init.Direction = SPI_DIRECTION_2LINES;
 	hspi.Init.DataSize = SPI_DATASIZE_8BIT;
 	hspi.Init.CLKPolarity = SPI_POLARITY_LOW;
-	hspi.Init.CLKPhase = SPI_PHASE_1EDGE;
+	hspi.Init.CLKPhase = SPI_PHASE_2EDGE;
 	hspi.Init.FirstBit = SPI_FIRSTBIT_MSB;
-	//hspi.Init.CRCCalculation = SPI_CRCCALCULATION_ENABLE;      
+	hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;      
 	//hspi.Init.CRCPolynomial = 7;
 	hspi.Init.NSS = SPI_NSS_SOFT;      
-	hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;                   
-
+	hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;                   
+	hspi.Init.TIMode = SPI_TIMODE_DISABLE;
 	if(HAL_SPI_Init(&hspi) != HAL_OK) {
     	Error_Handler();
 	}
-  
-	__HAL_SPI_ENABLE(&hspi);
 
-
+    my_log(0,SPI_MODULE,"%s error=%d, state=%d\r\n", __FUNCTION__, hspi.ErrorCode,hspi.State);
+  __HAL_SPI_ENABLE(&hspi);
 	return 0;
 }
 
@@ -41,6 +40,8 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *h)
 		my_log(0,SPI_MODULE,"hspi is null");
 		return;
 	}
+
+	my_log(0,SPI_MODULE,"%s\r\n",__FUNCTION__);
 
 	SPI1_GPIOA_CLK_ENABLE();
 	SPI1_GPIOE_CLK_ENABLE();
@@ -60,27 +61,23 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *h)
     GPIO_InitStructE.Pull  = GPIO_NOPULL;
   	GPIO_InitStructE.Speed = GPIO_SPEED_FAST;
     HAL_GPIO_Init(SPI1_PORTE_GPIO_PORT, &GPIO_InitStructE);
-
 }
 
-uint8_t write()
+uint8_t SPI_Write(uint8_t *txData, uint8_t *rxData, uint8_t len)
 {
-
-
-  my_log(0,SPI_MODULE,"SPI tx/rx\r\n");
   HAL_StatusTypeDef ret;
-  uint8_t txData[2]={0x0f,0x00};
-  uint8_t rxData[2]={0x00,0x00};
 
-  my_log(0,SPI_MODULE,"HAL_SPI_TransmitReceive tx/rx\r\n");
+  txData[0] = txData[0] | 0x80;
+
+  if(len>1)
+  	txData[0] = txData[0] | 0x40;
 
   HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_RESET);
 
-  ret = HAL_SPI_TransmitReceive(&hspi, txData, rxData, 1, 500);
-  HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_SET);
+  ret = HAL_SPI_Transmit(&hspi, txData, len, 200);
+  ret = HAL_SPI_Receive(&hspi, rxData, len, 200);
 
-  //ret = HAL_SPI_Transmit(&hspi, txData, 1, 1000);
-  my_log(0,SPI_MODULE,"HAL_SPI_TransmitReceive returned <ret=%d>, res = <%x>\n",ret,rxData[0]);
+  HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_SET);
 
   return 0;
 }
