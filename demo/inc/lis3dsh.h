@@ -16,15 +16,11 @@
 #define LIS3DSH_OUT_Z_H_REG	0x2D
 
 uint8_t LIS3DSH_Whoami();
-uint8_t LIS3DSH_On();
-uint8_t LIS3DSH_IntteruptOn();
-uint8_t LIS3DSH_Temp();
-uint8_t LIS3DSH_Out_x_l();
-uint8_t LIS3DSH_Out_x_h();
-uint8_t LIS3DSH_Out_y_l();
-uint8_t LIS3DSH_Out_y_h();
+uint8_t LIS3DSH_Init();
+
 uint8_t LIS3DSH_Out_z_l();
 uint8_t LIS3DSH_Out_z_h();
 uint8_t LIS3DSH_Status();
+uint8_t LIS3DSH_GetAccelZ();
 
 uint8_t LIS3DSH_Read_REG4();

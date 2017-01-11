@@ -114,27 +114,17 @@ int main(void)
   my_log(0,MODULE_MAIN,"SPI init\r\n");
   SPI_Init();
 
-  //my_log(0,MODULE_MAIN,"Main loop...\r\n");
   LIS3DSH_Whoami();
-  LIS3DSH_On();
+  LIS3DSH_Init();
   LIS3DSH_Read_REG4();
-  //LIS3DSH_IntteruptOn();
+
 
   while(1)
   {
       HAL_Delay(1000);
-      //LIS3DSH_Temp();
-
-      //LIS3DSH_Status();
-      //LIS3DSH_Out_x_h();
-      //LIS3DSH_Out_x_l();
-
-      //LIS3DSH_Out_y_h();
-      //LIS3DSH_Out_y_l();
-
-      LIS3DSH_Out_z_h();
-      LIS3DSH_Out_z_l();
-
+      uint16_t accelZ = 0;
+      LIS3DSH_GetAccelZ(&accelZ);
+      my_log(0,MODULE_MAIN,"Z= <%x>\r\n", accelZ);
   }
 
 

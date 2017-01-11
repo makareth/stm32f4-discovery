@@ -19,3 +19,4 @@ extern SPI_HandleTypeDef  hspi;
 
 int16_t SPI_Init(void);
 uint8_t SPI_Write(uint8_t *txData, uint8_t *rxData, uint8_t len);
+uint8_t SPI_Read(uint8_t *txData, uint8_t *rxData);

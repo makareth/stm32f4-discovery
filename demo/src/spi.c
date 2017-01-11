@@ -65,39 +65,20 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *h)
 
 uint8_t SPI_Write(uint8_t *txData, uint8_t *rxData, uint8_t len)
 {
-  //txData[0] = txData[0] | 0x00;
-
-  /*if(len>1)
-  	txData[0] = txData[0] | 0x40;
-*/
   HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_RESET);
-
   HAL_SPI_TransmitReceive(&hspi, txData, rxData, len, 200);
-  //HAL_SPI_Receive(&hspi, rxData, len, 200);
-
   HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_SET);
 
   return 0;
 }
 
-uint8_t SPI_Read(uint8_t *txData, uint8_t *rxData, uint8_t len)
+uint8_t SPI_Read(uint8_t *txData, uint8_t *rxData)
 {
-  HAL_StatusTypeDef ret;
+  *txData |= 0x80;
 
-  txData[0] |= 0x80;
-/*
-  if(len>1)
-  	txData[0] = txData[0] | 0x40;
-*/
   HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_RESET);
-
-  ret = HAL_SPI_Transmit(&hspi, &txData[0], 1, 200);
-  ret = HAL_SPI_Receive(&hspi, &rxData[0], 2, 200);
-
-/*
-  ret = HAL_SPI_Transmit(&hspi, &txData[1], 1, 200);
-  ret = HAL_SPI_Receive(&hspi, &rxData[1], 1, 200);
-*/
+  HAL_SPI_Transmit(&hspi, txData, 1, 200);
+  HAL_SPI_Receive(&hspi, rxData, 1, 200);
   HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_SET);
 
   return 0;
