@@ -26,3 +26,5 @@ uint8_t LIS3DSH_Out_y_h();
 uint8_t LIS3DSH_Out_z_l();
 uint8_t LIS3DSH_Out_z_h();
 uint8_t LIS3DSH_Status();
+
+uint8_t LIS3DSH_Read_REG4();

@@ -117,6 +117,7 @@ int main(void)
   //my_log(0,MODULE_MAIN,"Main loop...\r\n");
   LIS3DSH_Whoami();
   LIS3DSH_On();
+  LIS3DSH_Read_REG4();
   //LIS3DSH_IntteruptOn();
 
   while(1)
