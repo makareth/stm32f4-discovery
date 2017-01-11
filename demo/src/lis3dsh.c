@@ -46,23 +46,23 @@ uint8_t LIS3DSH_Init()
 	return 0;
 }
 
-uint8_t LIS3DSH_GetAccelZ(uint16_t *accelZ)
+uint8_t LIS3DSH_GetAccel(uint8_t high_reg, uint8_t low_reg, uint16_t *accel)
 {
 	uint8_t txData=0x55;
 	uint8_t rxData=0x55;
 
-	if(!accelZ)
+	if(!accel)
 		return 1;
 
-	*accelZ=0;
+	*accel=0;
 
-	txData=LIS3DSH_OUT_Z_L_REG;
+	txData=low_reg;
 	SPI_Read(&txData, &rxData);
 
-	*accelZ |= rxData;
-	txData=LIS3DSH_OUT_Z_H_REG;
+	*accel |= rxData;
+	txData=high_reg;
 	SPI_Read(&txData, &rxData);
-	*accelZ |= (rxData<<8);
+	*accel |= (rxData<<8);
 
 	return 0;
 }

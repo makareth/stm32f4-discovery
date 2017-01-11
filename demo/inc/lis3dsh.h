@@ -18,9 +18,7 @@
 uint8_t LIS3DSH_Whoami();
 uint8_t LIS3DSH_Init();
 
-uint8_t LIS3DSH_Out_z_l();
-uint8_t LIS3DSH_Out_z_h();
 uint8_t LIS3DSH_Status();
-uint8_t LIS3DSH_GetAccelZ();
+uint8_t LIS3DSH_GetAccel(uint8_t high_reg, uint8_t low_reg, uint16_t *accel);
 
 uint8_t LIS3DSH_Read_REG4();

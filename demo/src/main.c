@@ -118,13 +118,16 @@ int main(void)
   LIS3DSH_Init();
   LIS3DSH_Read_REG4();
 
-
   while(1)
   {
       HAL_Delay(1000);
-      uint16_t accelZ = 0;
-      LIS3DSH_GetAccelZ(&accelZ);
-      my_log(0,MODULE_MAIN,"Z= <%x>\r\n", accelZ);
+      uint16_t accel = 0;
+      LIS3DSH_GetAccel( LIS3DSH_OUT_X_H_REG , LIS3DSH_OUT_X_L_REG , &accel);
+      my_log(0,MODULE_MAIN,"X= <%x>\r\n", accel);
+      LIS3DSH_GetAccel( LIS3DSH_OUT_Y_H_REG , LIS3DSH_OUT_Y_L_REG , &accel);
+      my_log(0,MODULE_MAIN,"Y= <%x>\r\n", accel);
+      LIS3DSH_GetAccel( LIS3DSH_OUT_Z_H_REG, LIS3DSH_OUT_Z_L_REG , &accel);
+      my_log(0,MODULE_MAIN,"Z= <%x>\r\n", accel);
   }
 
 
