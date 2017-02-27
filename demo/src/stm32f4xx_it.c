@@ -41,6 +41,8 @@
 #include "main.h"
 #include "stm32f4xx_it.h"
 
+#include "spi.h"
+  #include "console.h"
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
   */
@@ -67,6 +69,7 @@
   */
 void NMI_Handler(void)
 {
+    BSP_LED_On(LED4);
 }
 
 /**
@@ -76,6 +79,7 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
+    BSP_LED_On(LED4);
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
@@ -89,6 +93,7 @@ void HardFault_Handler(void)
   */
 void MemManage_Handler(void)
 {
+    BSP_LED_On(LED4);
   /* Go to infinite loop when Memory Manage exception occurs */
   while (1)
   {
@@ -102,6 +107,7 @@ void MemManage_Handler(void)
   */
 void BusFault_Handler(void)
 {
+    BSP_LED_On(LED4);
   /* Go to infinite loop when Bus Fault exception occurs */
   while (1)
   {
@@ -115,6 +121,7 @@ void BusFault_Handler(void)
   */
 void UsageFault_Handler(void)
 {
+    BSP_LED_On(LED4);
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
   {
@@ -128,6 +135,7 @@ void UsageFault_Handler(void)
   */
 void SVC_Handler(void)
 {
+    BSP_LED_On(LED4);
 }
 
 /**
@@ -137,6 +145,7 @@ void SVC_Handler(void)
   */
 void DebugMon_Handler(void)
 {
+    BSP_LED_On(LED4);
 }
 
 /**
@@ -146,6 +155,7 @@ void DebugMon_Handler(void)
   */
 void PendSV_Handler(void)
 {
+    BSP_LED_On(LED4);
 }
 
 /**
@@ -155,6 +165,7 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
+
   HAL_IncTick();
 }
 
@@ -173,6 +184,26 @@ void SysTick_Handler(void)
 void EXTI0_IRQHandler(void)
 {
   HAL_GPIO_EXTI_IRQHandler(KEY_BUTTON_PIN);
+}
+
+void DMA2_Stream3_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(DMA_Tx_GetHandle());
+}
+
+/**
+  * @brief  This function handles SPI interrupt request.
+  * @param  None
+  * @retval None
+  */
+void SPIx_IRQHandler(void)
+{
+  HAL_SPI_IRQHandler(SPI_GetHandle());
+}
+
+void DMA2_Stream0_IRQHandler(void)
+{
+    HAL_DMA_IRQHandler(DMA_Rx_GetHandle());
 }
 
 /**

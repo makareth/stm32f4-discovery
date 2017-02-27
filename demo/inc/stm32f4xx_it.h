@@ -50,6 +50,9 @@ void RTC_Alarm_IRQHandler(void);
 void TIM2_IRQHandler(void);
 extern void USB_OTG_BSP_TimerIRQ(void);
 
+void DMA2_Stream3_IRQHandler(void);
+
+
 #ifdef __cplusplus
 }
 #endif

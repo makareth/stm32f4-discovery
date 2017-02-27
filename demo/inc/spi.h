@@ -20,3 +20,16 @@ extern SPI_HandleTypeDef  hspi;
 int16_t SPI_Init(void);
 uint8_t SPI_Write(uint8_t *txData, uint8_t *rxData, uint8_t len);
 uint8_t SPI_Read(uint8_t *txData, uint8_t *rxData);
+uint8_t SPI_DMA_bind();
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi) ;
+SPI_HandleTypeDef* SPI_GetHandle();
+
+DMA_HandleTypeDef* DMA_Tx_GetHandle();
+DMA_HandleTypeDef* DMA_Rx_GetHandle();
+
+void HAL_DMA_TxCpltCallback(DMA_HandleTypeDef *hspi);
+void HAL_DMA_TxHalfCpltCallback(DMA_HandleTypeDef *hspi);
+void HAL_DMA_ErrorCallback(DMA_HandleTypeDef *hdma);
+
+void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi);
+void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi);

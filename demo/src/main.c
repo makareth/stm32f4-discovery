@@ -41,6 +41,7 @@
 #include "console.h"
 #include "usart.h"
 #include "spi.h"
+#include "dma.h"
 #include "lis3dsh.h"
 #include "error.h"
 
@@ -83,25 +84,14 @@ uint32_t HAL_GetTick(void)
   */
 int main(void)
 {
- /* This sample code shows how to use STM32F4xx GPIO HAL API to toggle PD12, PD13,
-    PD14, and PD14 IOs (connected to LED4, LED3, LED5 and LED6 on STM32F401C-DISCO board (MB1115B)) 
-    in an infinite loop.
-    To proceed, 3 steps are required: */
-
-  /* STM32F4xx HAL library initialization:
-       - Configure the Flash prefetch, instruction and Data caches
-       - Configure the Systick to generate an interrupt each 1 msec
-       - Set NVIC Group Priority to 4
-       - Global MSP (MCU Support Package) initialization
-     */
   HAL_Init();
- 
+
   /* Configure LED3, LED4, LED5 and LED6 */
   BSP_LED_Init(LED3);
   BSP_LED_Init(LED4);
   BSP_LED_Init(LED5);
   BSP_LED_Init(LED6);
-  
+
   /* Configure the system clock to 84 MHz */
   //SystemClock_Config();
 
@@ -110,9 +100,12 @@ int main(void)
   USART2_UART_Init();
   my_log(0,MODULE_MAIN,"UART initialized successfully\r\n");
 
-
   my_log(0,MODULE_MAIN,"SPI init\r\n");
+
+
   SPI_Init();
+  HAL_Delay(300);
+
 
   LIS3DSH_Whoami();
   LIS3DSH_Init();
@@ -120,7 +113,9 @@ int main(void)
 
   while(1)
   {
+
       HAL_Delay(1000);
+      
       uint16_t accel = 0;
       LIS3DSH_GetAccel( LIS3DSH_OUT_X_H_REG , LIS3DSH_OUT_X_L_REG , &accel);
       my_log(0,MODULE_MAIN,"X= <%x>\r\n", accel);
@@ -128,10 +123,10 @@ int main(void)
       my_log(0,MODULE_MAIN,"Y= <%x>\r\n", accel);
       LIS3DSH_GetAccel( LIS3DSH_OUT_Z_H_REG, LIS3DSH_OUT_Z_L_REG , &accel);
       my_log(0,MODULE_MAIN,"Z= <%x>\r\n", accel);
+      
   }
 
 
 }
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
