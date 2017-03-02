@@ -114,15 +114,41 @@ int main(void)
   while(1)
   {
 
-      HAL_Delay(1000);
+      HAL_Delay(50);
       
-      uint16_t accel = 0;
+      int16_t accel = 0;
       LIS3DSH_GetAccel( LIS3DSH_OUT_X_H_REG , LIS3DSH_OUT_X_L_REG , &accel);
-      my_log(0,MODULE_MAIN,"X= <%x>\r\n", accel);
+      if(accel>1000) {
+        BSP_LED_On(LED5);
+        BSP_LED_Off(LED4);
+      }
+      else if(accel<-1000){
+        BSP_LED_On(LED4);
+        BSP_LED_Off(LED5);
+      }
+      else {
+        BSP_LED_Off(LED4);
+        BSP_LED_Off(LED5);
+      }
+
+      my_log(0,MODULE_MAIN,"X= <%x> %d\r\n", accel, accel);
       LIS3DSH_GetAccel( LIS3DSH_OUT_Y_H_REG , LIS3DSH_OUT_Y_L_REG , &accel);
-      my_log(0,MODULE_MAIN,"Y= <%x>\r\n", accel);
+      my_log(0,MODULE_MAIN,"Y= <%x> %d\r\n", accel, accel);
+      if(accel>1000) {
+        BSP_LED_On(LED3);
+        BSP_LED_Off(LED6);
+      }
+      else if(accel<-1000){
+        BSP_LED_On(LED6);
+        BSP_LED_Off(LED3);
+      }
+      else {
+        BSP_LED_Off(LED3);
+        BSP_LED_Off(LED6);
+      }
+
       LIS3DSH_GetAccel( LIS3DSH_OUT_Z_H_REG, LIS3DSH_OUT_Z_L_REG , &accel);
-      my_log(0,MODULE_MAIN,"Z= <%x>\r\n", accel);
+      my_log(0,MODULE_MAIN,"Z= <%x> %d\r\n", accel, accel);
       
   }
 

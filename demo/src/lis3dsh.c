@@ -46,7 +46,7 @@ uint8_t LIS3DSH_Init()
 	return 0;
 }
 
-uint8_t LIS3DSH_GetAccel(uint8_t high_reg, uint8_t low_reg, uint16_t *accel)
+uint8_t LIS3DSH_GetAccel(uint8_t high_reg, uint8_t low_reg, int16_t *accel)
 {
 	uint8_t txData=0x55;
 	uint8_t rxData=0x55;
