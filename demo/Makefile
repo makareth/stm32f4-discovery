@@ -18,7 +18,7 @@ MCU_UC     	= STM32F407VG
 LDFILE		= STM32F407VG_FLASH.ld
 
 #SRCS       	= main.c syscalls.c stm32f4xx_hal_msp.c console.c
-SRCS       	= main.c syscalls.c usart.c console.c spi.c error.c lis3dsh.c
+SRCS       	= main.c syscalls.c usart.c console.c spi.c error.c lis3dsh.c button.c
 # stm32f4_discovery_lis302dl.c
 SRCS      	+= system_$(MCU_FAMILY).c
 SRCS      	+= stm32f4xx_it.c

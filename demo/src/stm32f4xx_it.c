@@ -43,6 +43,10 @@
 
 #include "spi.h"
   #include "console.h"
+
+#define MODULE_IT "IT"
+volatile int btn_state = 0;
+
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
   */
@@ -183,7 +187,59 @@ void SysTick_Handler(void)
   */
 void EXTI0_IRQHandler(void)
 {
+  //my_log(0,MODULE_IT,"EXTI0_IRQHandler\r\n");
   HAL_GPIO_EXTI_IRQHandler(KEY_BUTTON_PIN);
+}
+
+/**
+  * @brief EXTI line detection callbacks
+  * @param GPIO_Pin: Specifies the pins connected EXTI line
+  * @retval None
+  */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+GPIO_PinState p;
+p = HAL_GPIO_ReadPin(GPIOA, GPIO_Pin);
+  my_log(0,MODULE_IT,"pin state=%d btn_state=%d\r\n",(int)p,btn_state);
+
+  if(GPIO_Pin == KEY_BUTTON_PIN)
+  {
+    if(btn_state && p) {
+      my_log(0,MODULE_IT,"FAILED true \r\n");
+      return;
+    }
+    else if (btn_state && !p) {
+      /* Toggle LED3 */
+      BSP_LED_Toggle(LED3);
+      /* Toggle LED4 */
+      BSP_LED_Toggle(LED4);    
+      /* Toggle LED5 */
+      BSP_LED_Toggle(LED5);   
+      /* Toggle LED6 */
+      BSP_LED_Toggle(LED6);
+      btn_state = 0;
+    }
+    else if(!btn_state && p) {
+      /* Toggle LED3 */
+      BSP_LED_Toggle(LED3);
+      /* Toggle LED4 */
+      BSP_LED_Toggle(LED4);    
+      /* Toggle LED5 */
+      BSP_LED_Toggle(LED5);   
+      /* Toggle LED6 */
+      BSP_LED_Toggle(LED6);
+
+      btn_state =1;
+    }
+    else if (!btn_state && !p) {
+      my_log(0,MODULE_IT,"FAILED false\r\n");
+      return;
+    }
+
+  }
+  else {
+    my_log(0,MODULE_IT,"Not key button\r\n");
+  }
 }
 
 void DMA2_Stream3_IRQHandler(void)

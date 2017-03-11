@@ -44,6 +44,7 @@
 #include "dma.h"
 #include "lis3dsh.h"
 #include "error.h"
+#include "button.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
@@ -106,6 +107,7 @@ int main(void)
   SPI_Init();
   HAL_Delay(300);
 
+  Button_Init();
 
   LIS3DSH_Whoami();
   LIS3DSH_Init();
@@ -116,7 +118,7 @@ int main(void)
 
       HAL_Delay(50);
       
-      int16_t accel = 0;
+      /*int16_t accel = 0;
       LIS3DSH_GetAccel( LIS3DSH_OUT_X_H_REG , LIS3DSH_OUT_X_L_REG , &accel);
       if(accel>1000) {
         BSP_LED_On(LED5);
@@ -149,7 +151,7 @@ int main(void)
 
       LIS3DSH_GetAccel( LIS3DSH_OUT_Z_H_REG, LIS3DSH_OUT_Z_L_REG , &accel);
       my_log(0,MODULE_MAIN,"Z= <%x> %d\r\n", accel, accel);
-      
+      */
   }
 
 
