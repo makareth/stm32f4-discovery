@@ -18,11 +18,11 @@ MCU_UC     	= STM32F407VG
 LDFILE		= STM32F407VG_FLASH.ld
 
 #SRCS       	= main.c syscalls.c stm32f4xx_hal_msp.c console.c
-SRCS       	= main.c syscalls.c usart.c console.c spi.c error.c lis3dsh.c button.c
+SRCS       	= main.c syscalls.c usart.c console.c spi.c error.c lis3dsh.c button.c i2c.c cs43l12.c
 # stm32f4_discovery_lis302dl.c
 SRCS      	+= system_$(MCU_FAMILY).c
 SRCS      	+= stm32f4xx_it.c
-SRCS      	+= stm32f4xx_hal_rcc.c stm32f4xx_hal_rcc_ex.c stm32f4xx_hal.c stm32f4xx_hal_cortex.c stm32f4xx_hal_gpio.c stm32f4xx_hal_spi.c stm32f4xx_hal_dma.c stm32f4xx_hal_pwr_ex.c stm32f4xx_hal_uart.c $(BSP_BASE).c
+SRCS      	+= stm32f4xx_hal_rcc.c stm32f4xx_hal_rcc_ex.c stm32f4xx_hal.c stm32f4xx_hal_cortex.c stm32f4xx_hal_gpio.c stm32f4xx_hal_spi.c stm32f4xx_hal_i2s.c stm32f4xx_hal_i2s_ex.c  stm32f4xx_hal_i2c.c stm32f4xx_hal_dma.c stm32f4xx_hal_pwr_ex.c stm32f4xx_hal_uart.c $(BSP_BASE).c
 
 
 OCD_DIR    	= /usr/share/openocd/scripts

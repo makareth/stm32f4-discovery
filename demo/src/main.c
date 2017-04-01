@@ -45,6 +45,8 @@
 #include "lis3dsh.h"
 #include "error.h"
 #include "button.h"
+#include "i2c.h"
+#include "cs43l12.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
@@ -101,9 +103,11 @@ int main(void)
   USART2_UART_Init();
   my_log(0,MODULE_MAIN,"UART initialized successfully\r\n");
 
+  my_log(0,MODULE_MAIN,"I2C init\r\n");
+  I2C_Init();
+  HAL_Delay(300);
+
   my_log(0,MODULE_MAIN,"SPI init\r\n");
-
-
   SPI_Init();
   HAL_Delay(300);
 
@@ -112,6 +116,19 @@ int main(void)
   LIS3DSH_Whoami();
   LIS3DSH_Init();
   LIS3DSH_Read_REG4();
+
+  I2S3_Init();
+  CS43L12_Init();
+
+  CS43L12_ReadId();
+  CS43L12_ReadError();
+  CS43L12_ReadMasterVolume();
+
+  CS43L12_ReadPower();
+
+  CS43L12_BeepContinuous();
+
+
 
   while(1)
   {
