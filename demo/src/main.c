@@ -48,6 +48,9 @@
 #include "i2c.h"
 #include "cs43l12.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
   */
@@ -67,75 +70,19 @@
 void Error_Handler(void);
 
 
-uint32_t    my_tick = 0;
 
-/* Private functions ---------------------------------------------------------*/
-void HAL_IncTick(void)
+
+void vAccelTask( void *pvParameters )
 {
-  my_tick++;
-}
-
-uint32_t HAL_GetTick(void)
-{
-  return my_tick;
-}
-
-/**
-  * @brief  Main program
-  * @param  None
-  * @retval None
-  */
-int main(void)
-{
-  HAL_Init();
-
-  /* Configure LED3, LED4, LED5 and LED6 */
-  BSP_LED_Init(LED3);
-  BSP_LED_Init(LED4);
-  BSP_LED_Init(LED5);
-  BSP_LED_Init(LED6);
-
-  /* Configure the system clock to 84 MHz */
-  //SystemClock_Config();
-
-  SysTick_Config(SystemCoreClock/ 1000);
-
-  USART2_UART_Init();
-  my_log(0,MODULE_MAIN,"UART initialized successfully\r\n");
-
-  my_log(0,MODULE_MAIN,"I2C init\r\n");
-  I2C_Init();
-  HAL_Delay(300);
-
-  my_log(0,MODULE_MAIN,"SPI init\r\n");
-  SPI_Init();
-  HAL_Delay(300);
-
-  Button_Init();
-
-  LIS3DSH_Whoami();
-  LIS3DSH_Init();
-  LIS3DSH_Read_REG4();
-
-  I2S3_Init();
-  CS43L12_Init();
-
-  CS43L12_ReadId();
-  CS43L12_ReadError();
-  CS43L12_ReadMasterVolume();
-
-  CS43L12_ReadPower();
-
-  CS43L12_BeepContinuous();
-
+  portTickType xLastWakeTime;
+  const portTickType xFrequency = 200;
+  xLastWakeTime=xTaskGetTickCount();
 
 
   while(1)
   {
-
-      HAL_Delay(50);
       
-      /*int16_t accel = 0;
+      int16_t accel = 0;
       LIS3DSH_GetAccel( LIS3DSH_OUT_X_H_REG , LIS3DSH_OUT_X_L_REG , &accel);
       if(accel>1000) {
         BSP_LED_On(LED5);
@@ -168,10 +115,90 @@ int main(void)
 
       LIS3DSH_GetAccel( LIS3DSH_OUT_Z_H_REG, LIS3DSH_OUT_Z_L_REG , &accel);
       my_log(0,MODULE_MAIN,"Z= <%x> %d\r\n", accel, accel);
-      */
+      
+      vTaskDelay(xFrequency/portTICK_PERIOD_MS);
   }
 
+}
+void vInitTask( void *pvParameters )
+{
 
+  USART2_UART_Init();
+  my_log(0,MODULE_MAIN,"UART initialized successfully\r\n");
+
+
+  my_log(0,MODULE_MAIN,"I2C init\r\n");
+
+  I2C_Init();
+
+
+  my_log(0,MODULE_MAIN,"SPI init\r\n");
+  SPI_Init();
+
+  Button_Init();
+
+  LIS3DSH_Whoami();
+  LIS3DSH_Init();
+  LIS3DSH_Read_REG4();
+
+  I2S3_Init();
+  CS43L12_Init();
+
+
+  CS43L12_ReadId();
+
+  CS43L12_ReadError();
+  CS43L12_ReadMasterVolume();
+
+  CS43L12_ReadPower();
+
+  my_log(0,MODULE_MAIN,"Starting tasks\r\n");
+  
+
+
+  CS43L12_BeepContinuous();
+}
+
+
+void vLEDFlashTask( void *pvParameters )
+{
+  portTickType xLastWakeTime;
+  const portTickType xFrequency = 200;
+  xLastWakeTime=xTaskGetTickCount();
+    for( ;; )
+    {
+      BSP_LED_Toggle(LED5);
+      vTaskDelay(xFrequency/portTICK_PERIOD_MS);
+      my_log(0,MODULE_MAIN,"delayed\r\n");
+    }
+}
+
+/**
+  * @brief  Main program
+  * @param  None
+  * @retval None
+  */
+int main(void)
+{
+
+  HAL_Init();
+
+  /* Configure LED3, LED4, LED5 and LED6 */
+  BSP_LED_Init(LED3);
+  BSP_LED_Init(LED4);
+  BSP_LED_Init(LED5);
+  BSP_LED_Init(LED6);
+
+  SystemInit();
+
+  #define mainLED_TASK_PRIORITY           ( tskIDLE_PRIORITY )
+
+  xTaskCreate( vInitTask, ( signed char * ) "INIT", configMINIMAL_STACK_SIZE, NULL, mainLED_TASK_PRIORITY, NULL );
+  xTaskCreate( vLEDFlashTask, ( signed char * ) "LED", configMINIMAL_STACK_SIZE, NULL, mainLED_TASK_PRIORITY, NULL );
+  xTaskCreate( vAccelTask, ( signed char * ) "ACCEL", configMINIMAL_STACK_SIZE, NULL, mainLED_TASK_PRIORITY, NULL );
+  vTaskStartScheduler ( ) ;
+
+  while(1);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

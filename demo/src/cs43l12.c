@@ -16,7 +16,8 @@ uint8_t CS43L12_Init(void) {
 
 
 	HAL_GPIO_WritePin (GPIOD, GPIO_PIN_4, GPIO_PIN_SET);
-	HAL_Delay(100);
+	// REMOVED for freertos : 
+	// HAL_Delay(100);
 
 	cmd[0] = 0x02;
 	cmd[1] = 0x01;

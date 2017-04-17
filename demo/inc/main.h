@@ -53,7 +53,6 @@
 /* Exported functions ------------------------------------------------------- */
 void Error_Handler(void);
 
-void HAL_IncTick(void);
 
 #endif /* __MAIN_H */
 

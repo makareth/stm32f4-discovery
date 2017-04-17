@@ -164,6 +164,9 @@ typedef struct HeapRegion
  */
 void vPortDefineHeapRegions( const HeapRegion_t * const pxHeapRegions ) PRIVILEGED_FUNCTION;
 
+void HAL_IncTick(void);
+
+uint32_t HAL_GetTick(void);
 
 /*
  * Map to the memory management routines required for the port.

@@ -42,7 +42,7 @@ void I2S3_Init(void) {
 	    Error_Handler();
 	}
 
-	my_log(0,I2C_MODULE,"%s done !\n", __FUNCTION__);
+	//my_log(0,I2C_MODULE,"%s done !\n", __FUNCTION__);
 }
 
 
