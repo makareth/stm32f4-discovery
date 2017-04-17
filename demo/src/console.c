@@ -235,7 +235,7 @@ int my_log ( int level , char *name, const char *fmt, ... ) {
 		char buf[length];
 		va_start(va, fmt);
 		length = ts_formatstring(buf, fmt, va);
-        printf ( "[%d.%d]  " , my_tick/1000 , my_tick % 1000 );
+        printf ( "[%d.%d]  " , HAL_GetTick()/1000 , HAL_GetTick() % 1000 );
 
         if ( name )
             _write(1, name, strlen(name) );

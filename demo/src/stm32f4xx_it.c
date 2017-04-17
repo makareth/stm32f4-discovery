@@ -83,7 +83,7 @@ void NMI_Handler(void)
   */
 void HardFault_Handler(void)
 {
-    BSP_LED_On(LED4);
+    BSP_LED_On(LED5);
   /* Go to infinite loop when Hard Fault exception occurs */
   while (1)
   {
@@ -137,11 +137,11 @@ void UsageFault_Handler(void)
   * @param  None
   * @retval None
   */
-void SVC_Handler(void)
+/*void SVC_Handler(void)
 {
     BSP_LED_On(LED4);
 }
-
+*/
 /**
   * @brief  This function handles Debug Monitor exception.
   * @param  None
@@ -157,21 +157,24 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void PendSV_Handler(void)
+/*void PendSV_Handler(void)
 {
     BSP_LED_On(LED4);
 }
-
+*/
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval None
   */
-void SysTick_Handler(void)
+/*void SysTick_Handler(void)
 {
-
-  HAL_IncTick();
-}
+    BSP_LED_Toggle(LED3);
+    
+    xPortSysTickHandler();
+    HAL_IncTick();
+    BSP_LED_Toggle(LED3);
+}*/
 
 /******************************************************************************/
 /*                 STM32F4xx Peripherals Interrupt Handlers                   */

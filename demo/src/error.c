@@ -8,12 +8,10 @@
   */
 void Error_Handler(void)
 {
-  printf("============== Error_Handler ==========\r\n" );
-  /* Turn LED5 on */
   BSP_LED_On(LED3);
-  BSP_LED_Off(LED4);
-  BSP_LED_Off(LED5);
-  BSP_LED_Off(LED6);
+  BSP_LED_On(LED4);
+  BSP_LED_On(LED5);
+  BSP_LED_On(LED6);
   while(1)
   {
   }

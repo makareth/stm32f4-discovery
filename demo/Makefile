@@ -8,8 +8,6 @@ BSP_BASE	= $(BOARD_LC)
 OCDFLAGS	= -f board/stm32f4discovery.cfg
 GDBFLAGS	=
 
-EXAMPLE		= Examples/GPIO/GPIO_IOToggle
-	
 MCU_FAMILY 	= stm32f4xx
 MCU_LC     	= stm32f407xx
 MCU_MC     	= STM32F407xx
@@ -23,7 +21,7 @@ SRCS       	= main.c syscalls.c usart.c console.c spi.c error.c lis3dsh.c button
 SRCS      	+= system_$(MCU_FAMILY).c
 SRCS      	+= stm32f4xx_it.c
 SRCS      	+= stm32f4xx_hal_rcc.c stm32f4xx_hal_rcc_ex.c stm32f4xx_hal.c stm32f4xx_hal_cortex.c stm32f4xx_hal_gpio.c stm32f4xx_hal_spi.c stm32f4xx_hal_i2s.c stm32f4xx_hal_i2s_ex.c  stm32f4xx_hal_i2c.c stm32f4xx_hal_dma.c stm32f4xx_hal_pwr_ex.c stm32f4xx_hal_uart.c $(BSP_BASE).c
-
+SRCS        += croutine.c event_groups.c list.c queue.c tasks.c timers.c heap_2.c port.c
 
 OCD_DIR    	= /usr/share/openocd/scripts
 
@@ -32,6 +30,7 @@ CUBE_DIR	= cube
 BSP_DIR         = $(CUBE_DIR)/Drivers/BSP/$(BOARD_UC)
 HAL_DIR		= $(CUBE_DIR)/Drivers/STM32F4xx_HAL_Driver
 CMSIS_DIR	= $(CUBE_DIR)/Drivers/CMSIS
+FREERTOS_DIR	= $(CUBE_DIR)/Middlewares/Third_Party/FreeRTOS
 
 DEV_DIR    	= $(CMSIS_DIR)/Device/ST/STM32F4xx
 
@@ -62,6 +61,8 @@ INCS      += -I$(BSP_DIR)
 INCS      += -I$(CMSIS_DIR)/Include
 INCS      += -I$(DEV_DIR)/Include
 INCS      += -I$(HAL_DIR)/Inc
+INCS      += -I$(FREERTOS_DIR)/Source/include
+#INCS      += -I$(FREERTOS_DIR)/Source/portable/GCC/ARM_CM4F
 
 LIBS       = -L$(CMSIS_DIR)/Lib
 
@@ -72,12 +73,14 @@ CFLAGS    += -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 CFLAGS    += -ffunction-sections -fdata-sections
 CFLAGS    += $(INCS) $(DEFS)
 
-LDFLAGS    =  -fno-exceptions -Wl,--gc-sections -Wl,-Map=$(TARGET).map $(LIBS) -T$(MCU_LC).ld
+LDFLAGS    =  -fno-exceptions -Wl,--gc-sections -Wl,-Map=$(TARGET).map $(LIBS) -T$(MCU_LC).ld 
 
 VPATH      = ./src
 VPATH     += $(BSP_DIR)
 VPATH     += $(HAL_DIR)/Src
 VPATH     += $(DEV_DIR)/Source/
+VPATH     += $(FREERTOS_DIR)/Source
+VPATH     += $(FREERTOS_DIR)/portable/GCC/ARM_CM4F
 
 #scoulibaly@K93SV:~/stmf4-discovery/demo/cube/Drivers/BSP/STM32F4-Discovery
 
