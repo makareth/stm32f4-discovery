@@ -47,9 +47,13 @@
 #include "button.h"
 #include "i2c.h"
 #include "cs43l12.h"
-
+#include "my_event.h"
+#include "my_queue.h"
+#include "sm.h"
+  
 #include "FreeRTOS.h"
 #include "task.h"
+#include "string.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
@@ -75,20 +79,27 @@ void Error_Handler(void);
 void vAccelTask( void *pvParameters )
 {
   portTickType xLastWakeTime;
-  const portTickType xFrequency = 200;
-  xLastWakeTime=xTaskGetTickCount();
+  const portTickType xFrequency = 50;
+  xLastWakeTime = xTaskGetTickCount();
 
+  e_imu_direction prev_dir = EVT_DIRECTION_CENTER;
 
+#define THR 2000
+  
   while(1)
   {
-      
+
+    e_imu_direction cur_dir = EVT_DIRECTION_CENTER;
+
       int16_t accel = 0;
       LIS3DSH_GetAccel( LIS3DSH_OUT_X_H_REG , LIS3DSH_OUT_X_L_REG , &accel);
-      if(accel>1000) {
+      if(accel>THR) {
+        cur_dir = EVT_DIRECTION_LEFT;
         BSP_LED_On(LED5);
         BSP_LED_Off(LED4);
       }
-      else if(accel<-1000){
+      else if(accel<-THR){
+        cur_dir = EVT_DIRECTION_RIGHT;
         BSP_LED_On(LED4);
         BSP_LED_Off(LED5);
       }
@@ -97,14 +108,16 @@ void vAccelTask( void *pvParameters )
         BSP_LED_Off(LED5);
       }
 
-      my_log(0,MODULE_MAIN,"X= <%x> %d\r\n", accel, accel);
+      //my_log(0,MODULE_MAIN,"X= <%x> %d\r\n", accel, accel);
       LIS3DSH_GetAccel( LIS3DSH_OUT_Y_H_REG , LIS3DSH_OUT_Y_L_REG , &accel);
-      my_log(0,MODULE_MAIN,"Y= <%x> %d\r\n", accel, accel);
-      if(accel>1000) {
+      //my_log(0,MODULE_MAIN,"Y= <%x> %d\r\n", accel, accel);
+      if(accel>THR) {
+        cur_dir = EVT_DIRECTION_FRONT;
         BSP_LED_On(LED3);
         BSP_LED_Off(LED6);
       }
-      else if(accel<-1000){
+      else if(accel<-THR){
+        cur_dir = EVT_DIRECTION_BACK;
         BSP_LED_On(LED6);
         BSP_LED_Off(LED3);
       }
@@ -114,12 +127,28 @@ void vAccelTask( void *pvParameters )
       }
 
       LIS3DSH_GetAccel( LIS3DSH_OUT_Z_H_REG, LIS3DSH_OUT_Z_L_REG , &accel);
-      my_log(0,MODULE_MAIN,"Z= <%x> %d\r\n", accel, accel);
+      //my_log(0,MODULE_MAIN,"Z= <%x> %d\r\n", accel, accel);
       
+      if ( cur_dir != prev_dir) {
+        t_event *evt = NULL;
+        evt = pvPortMalloc(sizeof(t_event));
+
+        e_imu_direction *ctx = NULL; 
+        ctx = pvPortMalloc(sizeof(e_imu_direction));
+        *ctx = cur_dir;
+
+        evt->type = EVT_TYPE_ACCEL_DATA;
+        evt->ctx = ctx;
+
+        //my_log(0,MODULE_MAIN,"Queuing @%x\r\n", evt);
+        my_queue_add(evt);
+      }
+
+      prev_dir = cur_dir;
       vTaskDelay(xFrequency/portTICK_PERIOD_MS);
   }
-
 }
+
 void vInitTask( void *pvParameters )
 {
 
@@ -153,8 +182,6 @@ void vInitTask( void *pvParameters )
   CS43L12_ReadPower();
 
   my_log(0,MODULE_MAIN,"Starting tasks\r\n");
-  
-
 
   CS43L12_BeepContinuous();
 }
@@ -169,8 +196,14 @@ void vLEDFlashTask( void *pvParameters )
     {
       BSP_LED_Toggle(LED5);
       vTaskDelay(xFrequency/portTICK_PERIOD_MS);
-      my_log(0,MODULE_MAIN,"delayed\r\n");
     }
+}
+
+
+
+void vSmTask( void *pvParameters )
+{
+  sm_run();
 }
 
 /**
@@ -193,9 +226,13 @@ int main(void)
 
   #define mainLED_TASK_PRIORITY           ( tskIDLE_PRIORITY )
 
+  my_queue_init();
+  sm_init();
+
   xTaskCreate( vInitTask, ( signed char * ) "INIT", configMINIMAL_STACK_SIZE, NULL, mainLED_TASK_PRIORITY, NULL );
   xTaskCreate( vLEDFlashTask, ( signed char * ) "LED", configMINIMAL_STACK_SIZE, NULL, mainLED_TASK_PRIORITY, NULL );
   xTaskCreate( vAccelTask, ( signed char * ) "ACCEL", configMINIMAL_STACK_SIZE, NULL, mainLED_TASK_PRIORITY, NULL );
+  xTaskCreate( vSmTask, ( signed char * ) "SM", configMINIMAL_STACK_SIZE, NULL, mainLED_TASK_PRIORITY, NULL );
   vTaskStartScheduler ( ) ;
 
   while(1);

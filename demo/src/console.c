@@ -245,7 +245,7 @@ int my_log ( int level , char *name, const char *fmt, ... ) {
         else if ( level == 2 ) _write(1, " [E]  ", 6 );
         else if ( level == 3 ) _write(1, " [F]  ", 6 );
 		length = _write(1, buf, length);
-        _write(1, "\r", 2);
+        _write(1, "\r\n", 3);
 		va_end(va);
 	}
 	return length;

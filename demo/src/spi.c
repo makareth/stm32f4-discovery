@@ -163,13 +163,11 @@ uint8_t SPI_Read(uint8_t *txData, uint8_t *rxData)
 
   	HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_RESET);
 
-	HAL_StatusTypeDef ret;
-
-    ret = HAL_SPI_Transmit_DMA(&hspi, txData, cnt);
+    HAL_SPI_Transmit_DMA(&hspi, txData, cnt);
 
     while (HAL_SPI_GetState(&hspi) != HAL_SPI_STATE_READY) {}
 
-    ret = HAL_SPI_Receive_DMA(&hspi, rxData, cnt);
+    HAL_SPI_Receive_DMA(&hspi, rxData, cnt);
     while (HAL_SPI_GetState(&hspi) != HAL_SPI_STATE_READY) {}
 
   	HAL_GPIO_WritePin (SPI1_PORTE_GPIO_PORT, SPI1_CS_PIN, GPIO_PIN_SET);
